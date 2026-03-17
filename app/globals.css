@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+:root {
+  --color-canvas: #f8f4ee;
+  --color-ink: #0b1813;
+  --color-emerald-deep: #0f3d2e;
+  --color-emerald-dark: #1e5a46;
+  --color-fern: #4e8a64;
+  --color-gold: #c8a96a;
+  --color-mist: #e2dbcf;
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-display: "Playfair Display", "Fraunces", "Times New Roman", Georgia, serif;
+  --radius-pill: 999px;
+  color-scheme: only light;
+}
+
+@theme inline {
+  --color-canvas: var(--color-canvas);
+  --color-ink: var(--color-ink);
+  --color-emerald-deep: var(--color-emerald-deep);
+  --color-emerald-dark: var(--color-emerald-dark);
+  --color-fern: var(--color-fern);
+  --color-gold: var(--color-gold);
+  --color-mist: var(--color-mist);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font-sans), "Plus Jakarta Sans", system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), "Playfair Display", "Fraunces", serif;
+    color: var(--color-ink);
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--color-emerald-dark) 70%, white);
+    color: #fff;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+@layer components {
+  .scroll-indicator {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+  }
+
+  .scroll-indicator::after {
+    content: "";
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: scrollPulse 2.8s ease-in-out infinite;
+  }
+
+  .whatsapp-shadow {
+    box-shadow: 0 20px 70px rgba(30, 90, 70, 0.25);
+  }
+
+  .card-glow {
+    box-shadow: 0 25px 70px rgba(12, 41, 32, 0.15);
+  }
+
+  .golf-grid {
+    background-image: radial-gradient(
+        circle at 1px 1px,
+        rgba(255, 255, 255, 0.6) 1px,
+        transparent 0
+      ),
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(200, 169, 106, 0.2) 60%,
+        transparent 100%
+      );
+    background-size: 28px 28px, 100% 100%;
+  }
+}
+
+@layer utilities {
+  .noise-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='none'/%3E%3Ccircle cx='10' cy='10' r='1' fill='rgba(255,255,255,0.08)'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    mix-blend-mode: soft-light;
+  }
+}
+
+@keyframes scrollPulse {
+  0% {
+    transform: translateY(-6px);
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(6px);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+}
+
+@keyframes floatCard {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator::after {
+    animation: none;
+  }
+}

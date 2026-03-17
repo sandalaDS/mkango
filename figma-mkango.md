@@ -1,0 +1,97 @@
+- generic [ref=e5]:
+  - generic [ref=e38]:
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - generic [ref=e42]:
+          - button "Main menu" [ref=e43]:
+            - img [ref=e44]
+            - img [ref=e47]
+          - generic [ref=e51]:
+            - generic [ref=e53]:
+              - button "Premium Hotel Website UI, file name" [ref=e54]: Premium Hotel Website UI
+              - generic [ref=e55]: File name
+            - button "Edit file menu" [ref=e59]:
+              - generic:
+                - img
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - status
+            - link "Learn more" [ref=e62] [cursor=pointer]:
+              - /url: https://help.figma.com/hc/articles/23870272542231
+              - generic [ref=e63]: AI
+        - generic [ref=e68]:
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - generic [ref=e75]: Sign up to use Figma Make
+              - generic [ref=e76]:
+                - button "Sign up" [ref=e77]
+                - button "Continue with Google" [ref=e80]:
+                  - generic:
+                    - img
+            - generic [ref=e81]:
+              - textbox "Describe your idea" [disabled] [ref=e84]
+              - generic [ref=e86]:
+                - generic [ref=e88]:
+                  - button "Add context" [disabled] [ref=e89]:
+                    - generic:
+                      - img
+                  - button "Select a library" [disabled] [ref=e91]:
+                    - generic:
+                      - img
+                - generic [ref=e92]:
+                  - button "Select model" [disabled] [ref=e94]:
+                    - generic: Default
+                    - img
+                  - button "Send" [disabled] [ref=e98]:
+                    - img [ref=e101]
+          - status [ref=e104]:
+            - generic [ref=e105]: Loading
+            - img [ref=e106]
+      - slider "Resize handle" [ref=e108]
+    - generic [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - button "Refresh preview" [ref=e113]:
+            - generic:
+              - img
+          - generic [ref=e114]:
+            - checkbox "Open console" [ref=e115]
+            - generic:
+              - generic: Open console
+              - generic:
+                - generic:
+                  - img
+          - generic [ref=e116]:
+            - checkbox "Mobile preview" [ref=e117]
+            - generic:
+              - generic: Mobile preview
+              - generic:
+                - img
+        - generic [ref=e118]:
+          - button "Multiplayer tools" [ref=e122]:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+          - button "Open full-screen view" [ref=e123]:
+            - generic:
+              - img
+          - button "Share" [ref=e124]:
+            - generic:
+              - generic:
+                - generic: Share
+      - generic [ref=e139]:
+        - generic:
+          - status:
+            - generic: Loading
+            - img
+  - status
+  - group [ref=e25]:
+    - alert [ref=e27]
+    - alert [ref=e29]
+  - toolbar "Help/zoom toolbar" [ref=e33]:
+    - button "Help" [ref=e35]:
+      - img
