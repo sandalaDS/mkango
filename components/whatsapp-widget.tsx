@@ -24,7 +24,7 @@ export default function WhatsAppWidget() {
             href="https://wa.me/260971000000"
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-[var(--color-emerald-dark)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[var(--color-emerald-deep)]"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-none bg-[var(--color-emerald-dark)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-[var(--color-emerald-deep)]"
           >
             Continue on WhatsApp
           </Link>
@@ -34,7 +34,7 @@ export default function WhatsAppWidget() {
         type="button"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
-        className="whatsapp-shadow flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-emerald-dark)] text-white transition hover:bg-[var(--color-emerald-deep)] focus:outline-none focus-visible:ring-4 focus-visible:ring-white/50"
+        className="whatsapp-shadow flex h-14 w-14 items-center justify-center rounded-none bg-[var(--color-emerald-dark)] text-white transition hover:bg-[var(--color-emerald-deep)] focus:outline-none focus-visible:ring-4 focus-visible:ring-white/50"
       >
         <span className="sr-only">Toggle WhatsApp concierge</span>
         <WhatsAppIcon />

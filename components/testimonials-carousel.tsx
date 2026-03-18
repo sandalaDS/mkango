@@ -73,14 +73,14 @@ export default function TestimonialsCarousel({
         <div className="flex gap-3">
           <button
             onClick={() => shift("prev")}
-            className="h-10 w-10 rounded-full border border-black/10 transition hover:border-black"
+            className="h-10 w-10 rounded-none border border-black/10 transition hover:border-black"
             aria-label="Show previous testimonial"
           >
             &larr;
           </button>
           <button
             onClick={() => shift("next")}
-            className="h-10 w-10 rounded-full border border-black/10 transition hover:border-black"
+            className="h-10 w-10 rounded-none border border-black/10 transition hover:border-black"
             aria-label="Show next testimonial"
           >
             &rarr;

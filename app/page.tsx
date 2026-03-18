@@ -1,8 +1,11 @@
 import type { ReactElement } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import BookRoomButton from "@/components/booking/book-room-button";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import WhatsAppWidget from "@/components/whatsapp-widget";
+import Header from "@/components/header";
+import { rooms as suiteInventory } from "@/data/rooms";
 
 type IconComponent = () => ReactElement;
 
@@ -15,14 +18,15 @@ type Experience = {
   Icon: IconComponent;
 };
 
-type Room = {
+type ShowcaseRoom = {
   name: string;
   detail: string;
   rate: string;
   image: string;
+  slug: string;
 };
 
-type GolfStat = {
+type FunctionStat = {
   label: string;
   detail: string;
   Icon: IconComponent;
@@ -73,56 +77,36 @@ const experiences: Experience[] = [
   },
 ];
 
-const rooms: Room[] = [
-  {
-    name: "Presidential Manor Suite",
-    detail: "Private plunge pool - Terrace cinema - Butler pantry",
-    rate: "From $520 / night",
-    image:
-      "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=1400&q=80",
-  },
-  {
-    name: "Savannah Panorama Loft",
-    detail: "Double-height salon - Soaking tub - Sunrise golf views",
-    rate: "From $380 / night",
-    image:
-      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1400&q=80",
-  },
-  {
-    name: "Garden Veranda Suite",
-    detail: "Private garden - Outdoor rain shower - Club privileges",
-    rate: "From $320 / night",
-    image:
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80",
-  },
-  {
-    name: "Residency Penthouse",
-    detail: "Three bedrooms - Chef's kitchen - Members' lift access",
-    rate: "From $640 / night",
-    image:
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1400&q=80",
-  },
-];
+const showcaseRooms: ShowcaseRoom[] = suiteInventory.map((room) => ({
+  name: room.title,
+  detail: room.amenities.join(" · "),
+  rate: `From $${room.pricePerNightUSD} / night`,
+  image: room.featuredImage,
+  slug: room.slug,
+}));
 
-const golfStats: GolfStat[] = [
+const defaultCheckoutSlug =
+  showcaseRooms[0]?.slug ?? suiteInventory[0]?.slug ?? "presidential-manor-suite";
+
+const functionStats: FunctionStat[] = [
   {
-    label: "18-hole course",
-    detail: "Par 72, dusk-lit back nine with River Chongwe breezes.",
+    label: "Bespoke styling",
+    detail: "Custom decor partnerships for tailored atmospheres.",
     Icon: FlagIcon,
   },
   {
-    label: "Pro shop",
-    detail: "Custom fittings, rental sets, and limited collab apparel.",
-    Icon: TeeIcon,
+    label: "Catering",
+    detail: "Chef-curated menus for intimate or grand receptions.",
+    Icon: ClocheIcon,
   },
   {
-    label: "Lessons",
-    detail: "PGA pros on rotation with short-game clinics weekly.",
+    label: "Event planning",
+    detail: "Dedicated concierge for end-to-end coordination.",
     Icon: SwingIcon,
   },
   {
-    label: "Clubhouse dining",
-    detail: "Sunken fireplace lounge & champagne Sunday brunch.",
+    label: "Multiple venues",
+    detail: "From garden marquees to the 350-guest grand ballroom.",
     Icon: ClubhouseIcon,
   },
 ];
@@ -199,146 +183,56 @@ const socials = [
 
 export default function Home() {
   return (
-    <div className="relative bg-canvas text-ink">
-      <div className="mx-auto flex min-h-screen max-w-[1400px] flex-col gap-14 px-4 pb-24 pt-6 sm:px-6 lg:px-10">
-        <header className="sticky top-4 z-40 rounded-full border border-white/35 bg-[#0a2318]/70 px-6 py-4 text-white shadow-[0_30px_90px_rgba(4,15,8,0.45)] backdrop-blur-2xl">
-          <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4">
-            <nav className="hidden items-center justify-start gap-6 text-[11px] font-medium uppercase tracking-[0.25em] lg:flex">
-              {navPrimary.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="transition-colors hover:text-[var(--color-gold)]"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex flex-col items-center gap-2 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/50 bg-white/10 text-2xl font-semibold tracking-[0.35em]">
-                M&apos;G
-              </div>
-              <span className="text-[11px] uppercase tracking-[0.6em] text-white/80">
-                M&apos;kango Golfview
-              </span>
-            </div>
-            <div className="flex flex-wrap items-center justify-end gap-3">
-              <nav className="hidden items-center gap-5 text-[11px] font-medium uppercase tracking-[0.25em] md:flex">
-                {navSecondary.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="transition-colors hover:text-[var(--color-gold)]"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
+    <div className="relative bg-[var(--color-canvas)] text-ink">
+      <Header />
+
+      <main>
+        <section
+          id="hero"
+          className="relative flex h-screen min-h-[600px] w-full items-center justify-center overflow-hidden text-center text-white"
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80"
+            alt="Aerial view of M&apos;kango Hotel grounds"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+
+          <div className="relative z-10 mt-16 flex w-full max-w-4xl flex-col items-center px-4">
+            <p className="text-xs uppercase tracking-[0.45em] text-white/90 lg:text-sm">
+              A manor for stays and elevated functions
+            </p>
+            <h2 className="mt-8 font-serif text-6xl leading-[1.05] text-[var(--color-gold)] sm:text-8xl lg:text-[9rem]">
+              M&apos;kango
+            </h2>
+            <p className="mt-8 max-w-2xl text-base text-white/90 lg:text-xl">
+              Suites open to lush landscapes, bespoke functions unfold in light-filled salons, all orchestrated through a 24/7 WhatsApp concierge.
+            </p>
+            <div className="mt-12 flex flex-wrap justify-center gap-5">
               <Link
-                href="#functions"
-                className="hidden rounded-full border border-white/40 px-4 py-2 text-[11px] uppercase tracking-[0.3em] transition hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] md:inline-flex"
+                href="/checkout"
+                className="rounded-none bg-[var(--color-gold)] px-8 py-4 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--color-emerald-deep)] transition hover:bg-white hover:text-[var(--color-ink)]"
               >
-                Plan Functions
+                Book a Stay
               </Link>
               <Link
-                href="#booking"
-                className="rounded-full bg-[var(--color-gold)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-[var(--color-emerald-deep)] transition hover:bg-[#d6b77f]"
+                href="#experiences"
+                className="rounded-none border border-white/50 bg-black/20 px-8 py-4 text-sm font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-sm transition hover:bg-white hover:text-[var(--color-ink)]"
               >
-                Book Now
+                Explore the Resort
               </Link>
             </div>
           </div>
-        </header>
 
-        <main className="flex flex-col gap-24 lg:gap-32">
-          <section
-            id="hero"
-            className="relative isolate left-1/2 w-screen -translate-x-1/2 min-h-screen overflow-hidden bg-[var(--color-emerald-deep)] text-white"
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80"
-              alt="Aerial view of M&apos;kango Golfview Hotel grounds"
-              fill
-              priority
-              className="object-cover"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#031207]/90 via-[#0c2c1d]/70 to-[#021006]/80" />
-            <div className="relative z-10 flex h-full flex-col justify-end">
-              <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 pb-16 pt-32 sm:px-6 lg:px-10">
-                <div className="grid gap-8 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)] lg:gap-12">
-                  <div className="rounded-[40px] bg-white/95 p-8 text-[var(--color-emerald-deep)] shadow-[0_45px_120px_rgba(7,23,14,0.28)] sm:p-10">
-                    <p className="text-xs uppercase tracking-[0.45em] text-[var(--color-fern)]">
-                      A manor for stays, golf, and elevated functions
-                    </p>
-                    <h1 className="mt-6 font-serif text-4xl leading-[1.08] text-[var(--color-emerald-deep)] sm:text-5xl lg:text-[4.75rem] lg:leading-[1.05]">
-                      M&apos;kango Golfview Hotel
-                    </h1>
-                    <p className="mt-5 max-w-3xl text-base text-[var(--color-emerald-deep)]/80 lg:text-xl">
-                      Suites spill onto the greens, bespoke weddings and conferences unfold in light-filled salons, and every transfer is orchestrated through a 24/7 WhatsApp concierge.
-                    </p>
-                    <div className="mt-8 flex flex-wrap gap-4">
-                      <Link
-                        href="#booking"
-                        className="rounded-full bg-[var(--color-emerald-deep)] px-8 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-[#14563f]"
-                      >
-                        Book a Stay
-                      </Link>
-                      <Link
-                        href="#experiences"
-                        className="rounded-full border border-[var(--color-emerald-deep)]/30 px-8 py-3 text-sm font-semibold uppercase tracking-[0.35em] text-[var(--color-emerald-deep)] transition hover:border-[var(--color-emerald-deep)] hover:bg-[var(--color-emerald-deep)]/5"
-                      >
-                        Explore the Resort
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="rounded-[40px] border border-white/25 bg-[#0a2215]/85 p-8 text-sm text-white/85 backdrop-blur">
-                    <p className="text-xs uppercase tracking-[0.35em] text-[var(--color-gold)]">
-                      Concierge composition
-                    </p>
-                    <p className="mt-4 text-base text-white/90">
-                      78 keys, 6 villas, and 5 event salons staged for editorial conferences, moonlit weddings, and player residencies above Lusaka&apos;s treetops.
-                    </p>
-                    <div className="mt-8 grid grid-cols-2 gap-4 text-white">
-                      <div>
-                        <p className="text-4xl font-semibold">24/7</p>
-                        <p className="text-[11px] uppercase tracking-[0.35em] text-white/70">
-                          WhatsApp concierge
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-4xl font-semibold">18</p>
-                        <p className="text-[11px] uppercase tracking-[0.35em] text-white/70">
-                          Championship holes
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-4xl font-semibold">350</p>
-                        <p className="text-[11px] uppercase tracking-[0.35em] text-white/70">
-                          Guest ballroom
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-4xl font-semibold">3</p>
-                        <p className="text-[11px] uppercase tracking-[0.35em] text-white/70">
-                          Signature dining rooms
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4 text-xs text-white/80 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="uppercase tracking-[0.45em]">
-                    Suites &bull; Golf &bull; Dining &bull; Bespoke functions
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="h-px w-16 bg-white/60" />
-                    <div className="scroll-indicator text-[11px]">Scroll</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center">
+            <div className="scroll-indicator text-[11px] text-white">Scroll</div>
+          </div>
+        </section>
+
+        <div className="mx-auto mt-24 flex max-w-[1400px] flex-col gap-24 px-4 pb-24 sm:px-6 lg:mt-32 lg:gap-32 lg:px-10">
 
           <section
             id="experiences"
@@ -407,23 +301,23 @@ export default function Home() {
                 Horizontal gallery of residences curated for serenity.
               </h2>
             </div>
-            <div className="-mx-4 overflow-x-auto px-4">
-              <div className="flex gap-6 pb-4 snap-x snap-mandatory">
-                {rooms.map((room) => (
-                  <article
-                    key={room.name}
-                    className="group relative min-w-[280px] flex-1 snap-start rounded-[32px] border border-black/5 bg-white shadow-[0_25px_80px_rgba(15,61,46,0.06)] transition hover:-translate-y-2 md:min-w-[360px]"
-                  >
-                    <div className="relative h-64 overflow-hidden rounded-[32px]">
-                      <Image
-                        src={room.image}
-                        alt={room.name}
-                        fill
-                        className="object-cover transition duration-700 ease-out group-hover:scale-105"
-                        sizes="(min-width: 1024px) 360px, 80vw"
-                      />
-                    </div>
-                    <div className="space-y-3 p-6">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {showcaseRooms.map((room) => (
+                <article
+                  key={room.slug}
+                  className="group relative flex flex-col rounded-[32px] border border-black/5 bg-white shadow-[0_25px_80px_rgba(15,61,46,0.06)] transition hover:-translate-y-2 overflow-hidden"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={room.image}
+                      alt={room.name}
+                      fill
+                      className="object-cover transition duration-700 ease-out group-hover:scale-105"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between space-y-4 p-6">
+                    <div className="space-y-3">
                       <div>
                         <p className="text-xs uppercase tracking-[0.3em] text-[var(--color-fern)]">
                           Suite
@@ -431,37 +325,33 @@ export default function Home() {
                         <h3 className="text-2xl">{room.name}</h3>
                       </div>
                       <p className="text-base text-black/70">{room.detail}</p>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-semibold">{room.rate}</span>
-                        <button className="rounded-full border border-black/20 px-4 py-2 text-xs uppercase tracking-[0.2em] transition hover:border-black hover:bg-black hover:text-white">
-                          View Room
-                        </button>
-                      </div>
                     </div>
-                  </article>
-                ))}
-              </div>
+                    <div className="mt-4 flex items-center justify-between text-sm">
+                      <span className="font-semibold">{room.rate}</span>
+                      <BookRoomButton slug={room.slug} label="Book this suite" />
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
 
           <section
-            id="golf"
+            id="functions"
             className="grid gap-10 rounded-[40px] border border-black/5 bg-white/70 p-8 lg:grid-cols-[1fr_0.9fr] lg:p-14"
           >
             <div className="space-y-8">
               <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-fern)]">
-                Golf Experience
+                Functions
               </p>
               <h2 className="text-4xl leading-tight">
-                A split layout of typography and imagery, narrating the course&apos;s rituals.
+                A bespoke layout of typography and imagery, setting the stage for unforgettable events.
               </h2>
               <p className="text-lg text-black/70">
-                Designed for dawn practices and sunset finishes, the course winds around
-                indigenous flora with caddies trained in storytelling. Stats are paired
-                with custom minimalist line illustrations for tactile clarity.
+                Designed for exclusive weddings, corporate residencies, and celebratory dinners, our spaces adapt to your vision with seamless elegance. Stats are paired with custom minimalist line illustrations for tactile clarity.
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
-                {golfStats.map((stat) => (
+                {functionStats.map((stat) => (
                   <div
                     key={stat.label}
                     className="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-[0_20px_45px_rgba(15,61,46,0.05)]"
@@ -479,15 +369,14 @@ export default function Home() {
             </div>
             <div className="relative overflow-hidden rounded-[40px]">
               <Image
-                src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80"
-                alt="Golfer on emerald fairway"
+                src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&w=1200&q=80"
+                alt="Elegant function space"
                 fill
                 className="object-cover brightness-[0.9]"
                 sizes="(min-width: 1024px) 40vw, 100vw"
               />
-              <div className="golf-grid absolute inset-0 opacity-80" />
               <div className="absolute bottom-6 left-6 rounded-3xl bg-white/80 px-6 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-emerald-deep)]">
-                Parallax fairways, curated foursomes
+                Curated spaces, unforgettable moments
               </div>
             </div>
           </section>
@@ -509,7 +398,7 @@ export default function Home() {
                 <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-gold)]">
                   Dining & Lounge
                 </p>
-                <h2 className="mt-6 text-4xl lg:text-5xl">Dining with a View</h2>
+                <h2 className="mt-6 text-4xl lg:text-5xl text-white">Dining with a View</h2>
                 <p className="mt-4 max-w-2xl text-lg text-white/80">
                   A full-width visual with fade reveal animation as guests scroll. Chef
                   Kamo&apos;s seasonal tasting, fire-to-table braais, and a champagne cart
@@ -517,8 +406,8 @@ export default function Home() {
                 </p>
               </div>
               <Link
-                href="#booking"
-                className="flex w-fit items-center gap-3 rounded-full border border-white/50 px-8 py-3 text-sm font-semibold uppercase tracking-[0.3em] transition hover:border-white"
+                href="/checkout"
+                className="flex w-fit items-center gap-3 rounded-none border border-white/50 px-8 py-3 text-sm font-semibold uppercase tracking-[0.3em] transition hover:border-white"
               >
                 Explore the Restaurant
                 <span aria-hidden>&rarr;</span>
@@ -581,10 +470,10 @@ export default function Home() {
                 <div className="flex items-center justify-between text-sm uppercase tracking-[0.2em] text-white/70">
                   <span>April 2026</span>
                   <div className="flex gap-3 text-white">
-                    <button aria-label="Previous week" className="h-9 w-9 rounded-full border border-white/30">
+                    <button aria-label="Previous week" className="h-9 w-9 rounded-none border border-white/30">
                       &larr;
                     </button>
-                    <button aria-label="Next week" className="h-9 w-9 rounded-full border border-white/30">
+                    <button aria-label="Next week" className="h-9 w-9 rounded-none border border-white/30">
                       &rarr;
                     </button>
                   </div>
@@ -602,7 +491,7 @@ export default function Home() {
                     >
                       {item.day}
                       <span
-                        className={`mt-1 h-1.5 w-1.5 rounded-full ${
+                        className={`mt-1 h-1.5 w-1.5 rounded-none ${
                           item.status === "available"
                             ? "bg-[var(--color-gold)]"
                             : item.status === "limited"
@@ -616,26 +505,34 @@ export default function Home() {
                 <p className="mt-4 text-xs uppercase tracking-[0.2em] text-white/70">
                   Limited nights flagged in amber. Waitlist nights in coral.
                 </p>
-                <Link
-                  href="https://wa.me/260971000000"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--color-emerald-deep)] transition hover:bg-white/90"
-                >
-                  Reserve with Concierge
-                </Link>
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <div className="flex-1">
+                    <BookRoomButton
+                      slug={defaultCheckoutSlug}
+                      variant="primary"
+                      label="Launch Checkout Demo"
+                      fullWidth
+                    />
+                  </div>
+                  <Link
+                    href="https://wa.me/260971000000"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex w-full flex-1 items-center justify-center rounded-none border border-white/40 px-6 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white transition hover:bg-white/10"
+                  >
+                    Reserve with Concierge
+                  </Link>
+                </div>
               </div>
             </div>
           </section>
-        </main>
-
         <footer
           id="footer"
-          className="mt-12 grid gap-8 rounded-[36px] border border-black/5 bg-white/80 p-10 lg:grid-cols-[1.1fr_1fr]"
+          className="grid gap-8 rounded-[36px] border border-black/5 bg-white/80 p-10 lg:grid-cols-[1.1fr_1fr]"
         >
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-black/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-none border border-black/10">
                 <span className="text-lg font-semibold">M&apos;G</span>
               </div>
               <p className="text-sm uppercase tracking-[0.3em] text-black/60">
@@ -656,7 +553,7 @@ export default function Home() {
                   href={href}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 transition hover:border-black hover:translate-y-[-2px]"
+                  className="flex h-11 w-11 items-center justify-center rounded-none border border-black/10 transition hover:border-black hover:translate-y-[-2px]"
                 >
                   <Icon />
                   <span className="sr-only">{label}</span>
@@ -683,7 +580,8 @@ export default function Home() {
             ))}
           </div>
         </footer>
-      </div>
+        </div>
+      </main>
       <WhatsAppWidget />
     </div>
   );
