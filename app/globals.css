@@ -171,4 +171,29 @@
   .scroll-indicator::after {
     animation: none;
   }
+  .animate-widget-attention {
+    animation: none;
+  }
+}
+
+@keyframes widgetAttention {
+  0%, 88%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  90% {
+    transform: scale(1.15) rotate(8deg);
+  }
+  93% {
+    transform: scale(0.95) rotate(-6deg);
+  }
+  96% {
+    transform: scale(1.1) rotate(4deg);
+  }
+  98% {
+    transform: scale(1.02) rotate(-2deg);
+  }
+}
+
+.animate-widget-attention {
+  animation: widgetAttention 16s ease-in-out infinite;
 }

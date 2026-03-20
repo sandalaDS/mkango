@@ -109,7 +109,7 @@ const SuccessReceipt = ({
         )}
         <div className="flex flex-col gap-4 text-sm text-[#5b5449]">
           <p>
-            Need to make a change? Email <span className="font-semibold">res@golfview-hotels.com</span> or message <span className="font-semibold">+260 979 727 715</span> on WhatsApp and quote #{reference.toUpperCase()}.
+            Need to make a change? Email <span className="font-semibold">res@golfview-hotels.com</span> and quote #{reference.toUpperCase()}.
           </p>
           <div className="flex flex-col gap-3 text-center sm:flex-row">
             <Link

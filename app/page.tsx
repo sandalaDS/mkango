@@ -153,8 +153,7 @@ const footerColumns: FooterColumn[] = [
     title: "Stay",
     links: [
       { label: "Rooms", href: "#rooms" },
-      { label: "Corporate & Specials", href: "#offers" },
-      { label: "Reservations", href: "#reservations" },
+      { label: "Reservations", href: "/checkout" },
     ],
   },
   {
@@ -176,7 +175,6 @@ const footerColumns: FooterColumn[] = [
   {
     title: "Contact",
     links: [
-      { label: "WhatsApp", href: "https://wa.me/260979727715" },
       { label: "Email Reservations", href: "mailto:res@golfview-hotels.com" },
       { label: "Call Front Desk", href: "tel:+260211290770" },
     ],
@@ -342,34 +340,6 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <div
-              id="offers"
-              className="rounded-[32px] border border-[var(--color-emerald-dark)]/10 bg-white/90 p-8 shadow-[0_20px_55px_rgba(15,61,46,0.05)]"
-            >
-              <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-fern)]">
-                Corporate & Specials
-              </p>
-              <h3 className="mt-3 text-2xl">Direct contact is the clearest route to current offers.</h3>
-              <p className="mt-3 max-w-3xl text-base text-black/70">
-                The live hotel site lists Corporate and Specials, but it does not publish fixed offer details on the page. For up to date rates, company arrangements, and special requests, contact the reservations team directly.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-4">
-                <Link
-                  href="https://wa.me/260979727715"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-none bg-[var(--color-emerald-dark)] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-[var(--color-emerald-deep)]"
-                >
-                  Message on WhatsApp
-                </Link>
-                <Link
-                  href="mailto:res@golfview-hotels.com"
-                  className="rounded-none border border-black/15 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-black transition hover:border-black hover:bg-black hover:text-white"
-                >
-                  Email Reservations
-                </Link>
-              </div>
-            </div>
           </section>
 
           <section
@@ -519,10 +489,6 @@ export default function Home() {
               </p>
               <dl className="mt-8 space-y-4 text-sm text-black/75">
                 <div>
-                  <dt className="text-xs uppercase tracking-[0.25em] text-black/50">WhatsApp</dt>
-                  <dd className="mt-1 font-medium">+260 979 727 715</dd>
-                </div>
-                <div>
                   <dt className="text-xs uppercase tracking-[0.25em] text-black/50">Front Desk</dt>
                   <dd className="mt-1 font-medium">+260 211 290 770 or +260 211 290 718</dd>
                 </div>
@@ -540,14 +506,6 @@ export default function Home() {
                 </div>
               </dl>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="https://wa.me/260979727715"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex flex-1 items-center justify-center rounded-none bg-[var(--color-emerald-dark)] px-6 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-white transition hover:bg-[#124533]"
-                >
-                  Message on WhatsApp
-                </Link>
                 <Link
                   href="mailto:res@golfview-hotels.com"
                   className="flex flex-1 items-center justify-center rounded-none border border-black/15 px-6 py-3 text-sm font-semibold uppercase tracking-[0.25em] text-black transition hover:border-black hover:bg-black hover:text-white"

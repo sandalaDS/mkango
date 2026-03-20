@@ -21,7 +21,9 @@ export default function WhatsAppWidget() {
           className="relative flex h-[62px] w-[62px] items-center justify-center rounded-full border-[3px] border-white bg-[#25D366] text-white shadow-[0_16px_34px_rgba(37,211,102,0.42)] transition hover:scale-[1.03] hover:bg-[#22c75a] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#25D366]/30"
         >
           <span className="sr-only">Open WhatsApp guest desk</span>
-          <WhatsAppIcon />
+          <div className="animate-widget-attention">
+            <WhatsAppIcon />
+          </div>
           <span className="absolute right-0 top-0 flex h-[19px] w-[19px] items-center justify-center rounded-full border-2 border-white bg-[#ff3b30] text-[10px] font-bold leading-none text-white shadow-[0_8px_18px_rgba(255,59,48,0.35)]">
             1
           </span>
