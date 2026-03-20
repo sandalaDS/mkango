@@ -53,7 +53,20 @@ export async function POST(req: NextRequest) {
       FAQs to help you answer:
       ${hotelFaqs.map((faq: any) => `Q: ${faq.question}\nA: ${faq.answer}`).join('\n\n')}
       
-      ${isEscalation ? "The user's query triggers an escalation. Politely acknowledge their request and tell them the staff will reach out. Do not attempt to confirm availability." : ""}
+      ${isEscalation ? `The user's query triggers an escalation. You MUST reply using this exact hybrid handoff pattern:
+1. Acknowledge that the request needs help from the hotel team and that you have shared it with them.
+2. Include exactly this line: "✔ Message sent to hotel team"
+3. State they'll get back shortly.
+4. Immediately offer other things you can still help with.
+
+Example:
+That request needs help from our hotel team, so I’ve shared it with them.
+
+✔ Message sent to hotel team
+
+They’ll get back to you shortly. In the meantime, I can still help with things like check-in times, room types, amenities, directions, and general hotel information.
+
+DO NOT use robotic language like "I cannot help with that" or "This is outside my scope" or "Please contact the hotel". Keep the conversation open.` : ""}
     `;
 
     // 4. Generate AI response (using standard generateText for simpler synchronous demo, 

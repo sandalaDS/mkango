@@ -97,20 +97,14 @@ const CheckoutExperience = () => {
     setPaymentNetwork,
     mobileNumber,
     setMobileNumber,
+    guests,
+    setGuests,
+    includeBreakfast,
+    setIncludeBreakfast,
     totalAmount,
     reset,
   } = useBookingStore();
 
-  const defaultRoom = useMemo<Room | undefined>(
-    () => selectedRoom ?? rooms.find((room) => room.status === "available") ?? rooms[0],
-    [selectedRoom],
-  );
-
-  useEffect(() => {
-    if (!selectedRoom && defaultRoom) {
-      setRoom(defaultRoom);
-    }
-  }, [selectedRoom, defaultRoom, setRoom]);
   useEffect(() => {
     const slugFromQuery = searchParams?.get("room");
     if (!slugFromQuery) return;
@@ -129,8 +123,8 @@ const CheckoutExperience = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const activeRoom = selectedRoom ?? defaultRoom;
-  const breakdown = getCostBreakdown(activeRoom, nights);
+  const activeRoom = selectedRoom;
+  const breakdown = getCostBreakdown(activeRoom, nights, guests, includeBreakfast);
   const totalDisplay = totalAmount || breakdown.total;
 
   const isCardSelected = paymentMethod === "card";
@@ -230,8 +224,26 @@ const CheckoutExperience = () => {
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
               <SectionTitle title="Reservation Summary" />
-              <Pill>Breakfast included in rack rates</Pill>
             </div>
+            
+            <div className="space-y-3">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#746d61]">Select a Room Type</label>
+                <select
+                  value={activeRoom?.slug || ""}
+                  onChange={handleRoomChange}
+                  className={fieldClass}
+                >
+                  <option value="" disabled>-- Select a room type --</option>
+                  {rooms.map((room) => (
+                    <option key={room.id} value={room.slug}>
+                      {room.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {activeRoom && (
               <div className="space-y-6">
                 <div className="overflow-hidden rounded-3xl border border-[#e8e0d4]">
@@ -245,27 +257,9 @@ const CheckoutExperience = () => {
                   />
                 </div>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h2 className="text-2xl font-semibold tracking-tight">
-                        {activeRoom.title}
-                      </h2>
-                      <p className="text-sm text-[#736b5f]">
-                        Current rates confirmed by reservations
-                      </p>
-                    </div>
-                    <select
-                      value={activeRoom.slug}
-                      onChange={handleRoomChange}
-                      className="rounded-none border border-[#d8d0c6] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-[#5a5348]"
-                    >
-                      {rooms.map((room) => (
-                        <option key={room.id} value={room.slug}>
-                          {room.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <h2 className="text-2xl font-semibold tracking-tight">
+                    {activeRoom.title}
+                  </h2>
                   <ul className="list-disc space-y-1 pl-5 text-sm text-[#5b5449]">
                     {activeRoom.amenities.map((amenity) => (
                       <li key={amenity}>{amenity}</li>
@@ -298,6 +292,47 @@ const CheckoutExperience = () => {
                     </p>
                   </div>
                 </div>
+                <div className="space-y-4 rounded-3xl border border-[#e8e0d4] p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold">Guests</p>
+                      <p className="text-xs text-[#6c665b]">Max 2 guests per room for base rates</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setGuests(Math.max(1, guests - 1))}
+                        className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d8d0c6] bg-white transition hover:bg-gray-50"
+                      >
+                        -
+                      </button>
+                      <span className="w-4 text-center text-sm font-semibold">{guests}</span>
+                      <button
+                        type="button"
+                        onClick={() => setGuests(Math.min(4, guests + 1))}
+                        className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d8d0c6] bg-white transition hover:bg-gray-50"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <hr className="border-[#e8e0d4]" />
+                  <label className="flex cursor-pointer items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold">Add Breakfast (B&B)</p>
+                      <p className="text-xs text-[#6c665b]">Enjoy our full buffet or continental breakfast</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-semibold text-[var(--color-emerald-dark)]">+ ZMW 390/person</span>
+                      <input
+                        type="checkbox"
+                        checked={includeBreakfast}
+                        onChange={(e) => setIncludeBreakfast(e.target.checked)}
+                        className="h-5 w-5 rounded border-gray-300 text-[var(--color-emerald-dark)] shadow focus:ring-[var(--color-emerald-dark)]"
+                      />
+                    </div>
+                  </label>
+                </div>
                 <div className="rounded-3xl bg-[#f8f5f0] p-5">
                   <div className="flex items-center justify-between text-sm text-[#6c665b]">
                     <span>
@@ -316,6 +351,22 @@ const CheckoutExperience = () => {
                   <p className="mt-2 text-xs text-[#6f695d]">
                     For corporate rates or specials, contact the hotel directly before payment.
                   </p>
+                </div>
+                <div className="mt-6 space-y-3">
+                  <SectionTitle title="Location & Transfers" />
+                  <div className="overflow-hidden rounded-3xl border border-[#e8e0d4]">
+                    <iframe
+                      width="100%"
+                      height="200"
+                      style={{ border: 0, filter: "grayscale(0.4) contrast(1.1) brightness(0.9)" }}
+                      loading="lazy"
+                      allowFullScreen
+                      src="https://maps.google.com/maps?q=M'kango%20Golfview%20Hotel,%20Lusaka&t=&z=12&ie=UTF8&iwloc=&output=embed"
+                    ></iframe>
+                    <div className="bg-[#f8f5f0] p-4 text-xs text-[#6b6458]">
+                      Approx. 15 minutes (16km) from Lusaka International Airport. Transfer arrangements can be made with our reservations team.
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -458,6 +509,15 @@ const CheckoutExperience = () => {
             )}
 
             {error && <p className="text-sm text-red-600">{error}</p>}
+
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900 shadow-sm">
+              <strong className="mb-2 block uppercase tracking-[0.2em]">Important Financial Policies</strong>
+              <ul className="list-disc space-y-1.5 pl-4 opacity-90">
+                <li>We accept cash settlements in <strong>USD, GBP, and EUR</strong> at the hotel.</li>
+                <li>Foreign banknotes must be <strong>2017 series or newer</strong>, clean/undamaged with no marks, and in denominations of $50/£50/€50 or above.</li>
+                <li>In compliance with Bank of Zambia directives, foreign currency refunds requested on-site will be issued in <strong>local Zambian Kwacha</strong> at the prevailing exchange rate.</li>
+              </ul>
+            </div>
 
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>

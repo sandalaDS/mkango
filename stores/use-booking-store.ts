@@ -1,19 +1,17 @@
-﻿import { create } from "zustand";
+import { create } from "zustand";
 import type { Room } from "@/types";
 
 const TAX_RATE = 0.12;
+const BREAKFAST_ZMW_PER_PERSON = 390;
+const EXTRA_GUEST_BASE_ZMW = 150;
 
 const toISODate = (date: Date) => date.toISOString().split("T")[0];
 
-const defaultCheckInDate = () => {
-  const date = new Date();
-  date.setDate(date.getDate() + 3);
-  return date;
-};
+const defaultCheckInDate = () => new Date();
 
 const defaultCheckOutDate = () => {
   const date = new Date();
-  date.setDate(date.getDate() + 5);
+  date.setDate(date.getDate() + 1);
   return date;
 };
 
@@ -25,9 +23,14 @@ const calculateNights = (checkIn: string, checkOut: string) => {
   return Number.isNaN(nights) ? 1 : Math.max(1, nights);
 };
 
-const calculateTotal = (room: Room | undefined, nights: number) => {
+const calculateTotal = (room: Room | undefined, nights: number, guests: number = 1, includeBreakfast: boolean = false) => {
   if (!room) return 0;
-  const base = room.pricePerNightZMW * nights;
+  let basePerNight = room.pricePerNightZMW;
+  if (guests > 1) {
+    basePerNight += (EXTRA_GUEST_BASE_ZMW * (guests - 1));
+  }
+  const breakfast = includeBreakfast ? (BREAKFAST_ZMW_PER_PERSON * guests) : 0;
+  const base = (basePerNight + breakfast) * nights;
   const taxes = base * TAX_RATE;
   return Math.round(base + taxes);
 };
@@ -55,11 +58,15 @@ type BookingState = {
   guestName: string;
   guestEmail: string;
   mobileNumber: string;
+  guests: number;
+  includeBreakfast: boolean;
   totalAmount: number;
   setRoom: (room: Room) => void;
   setDates: (checkIn: string, checkOut: string) => void;
   setGuestName: (value: string) => void;
   setGuestEmail: (value: string) => void;
+  setGuests: (count: number) => void;
+  setIncludeBreakfast: (include: boolean) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
   setPaymentNetwork: (network: PaymentNetwork) => void;
   setMobileNumber: (value: string) => void;
@@ -78,11 +85,13 @@ export const useBookingStore = create<BookingState>((set) => {
     guestName: "",
     guestEmail: "",
     mobileNumber: "",
+    guests: 1,
+    includeBreakfast: false,
     totalAmount: 0,
     setRoom: (room) =>
       set((state) => ({
         selectedRoom: room,
-        totalAmount: calculateTotal(room, state.nights),
+        totalAmount: calculateTotal(room, state.nights, state.guests, state.includeBreakfast),
       })),
     setDates: (checkIn, checkOut) =>
       set((state) => {
@@ -93,11 +102,13 @@ export const useBookingStore = create<BookingState>((set) => {
           checkIn: normalizedCheckIn,
           checkOut: normalizedCheckOut,
           nights,
-          totalAmount: calculateTotal(state.selectedRoom, nights),
+          totalAmount: calculateTotal(state.selectedRoom, nights, state.guests, state.includeBreakfast),
         };
       }),
     setGuestName: (guestName) => set(() => ({ guestName })),
     setGuestEmail: (guestEmail) => set(() => ({ guestEmail })),
+    setGuests: (guests) => set((state) => ({ guests, totalAmount: calculateTotal(state.selectedRoom, state.nights, guests, state.includeBreakfast) })),
+    setIncludeBreakfast: (includeBreakfast) => set((state) => ({ includeBreakfast, totalAmount: calculateTotal(state.selectedRoom, state.nights, state.guests, includeBreakfast) })),
     setPaymentMethod: (paymentMethod) => set(() => ({ paymentMethod })),
     setPaymentNetwork: (paymentNetwork) => set(() => ({ paymentNetwork })),
     setMobileNumber: (mobileNumber) => set(() => ({ mobileNumber })),
@@ -114,17 +125,24 @@ export const useBookingStore = create<BookingState>((set) => {
           guestName: "",
           guestEmail: "",
           mobileNumber: "",
+          guests: 1,
+          includeBreakfast: false,
           totalAmount: 0,
         };
       }),
   };
 });
 
-export const getCostBreakdown = (room: Room | undefined, nights: number) => {
+export const getCostBreakdown = (room: Room | undefined, nights: number, guests: number = 1, includeBreakfast: boolean = false) => {
   if (!room) {
     return { base: 0, taxes: 0, total: 0 };
   }
-  const base = room.pricePerNightZMW * nights;
+  let basePerNight = room.pricePerNightZMW;
+  if (guests > 1) {
+    basePerNight += (EXTRA_GUEST_BASE_ZMW * (guests - 1));
+  }
+  const breakfast = includeBreakfast ? (BREAKFAST_ZMW_PER_PERSON * guests) : 0;
+  const base = (basePerNight + breakfast) * nights;
   const taxes = Math.round(base * TAX_RATE);
   return {
     base,

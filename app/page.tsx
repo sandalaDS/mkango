@@ -43,11 +43,11 @@ type FooterColumn = {
 };
 
 const imageTheme = {
-  hero: "/images/mkango/IMG_8232.jpeg",
-  stay: "/images/mkango/IMG_0035.jpg",
-  functions: "/images/mkango/OCTOBER.jpg",
-  dining: "/images/mkango/rs=w_1160,h_773.webp",
-  roomsFeature: "/images/mkango/rs=w_1280,h_854.webp",
+  hero: "/images/mkango/new/front%20view.png",
+  stay: "/images/mkango/new/lobby.png",
+  functions: "/images/mkango/new/afrotheme.png",
+  dining: "/images/mkango/new/restaurant.png",
+  roomsFeature: "/images/mkango/new/gazelle.png",
 };
 
 const experiences: Experience[] = [
@@ -138,14 +138,14 @@ const proofPoints: ProofPoint[] = [
 ];
 
 const galleryShots = [
-  "/images/mkango/IMG_0025.jpg",
-  "/images/mkango/IMG_0035.jpg",
-  "/images/mkango/IMG_8232.jpeg",
-  "/images/mkango/OCTOBER.jpg",
-  "/images/mkango/rs=w_1160,h_773.webp",
-  "/images/mkango/rs=w_1280,h_768.webp",
-  "/images/mkango/rs=w_1280,h_854.webp",
-  "/images/mkango/Screen_Shot_2021-11-11_at_14.29.13.png",
+  "/images/mkango/new/lobby.png",
+  "/images/mkango/new/pool.png",
+  "/images/mkango/new/gym.png",
+  "/images/mkango/new/restaurant.png",
+  "/images/mkango/new/meal.png",
+  "/images/mkango/new/gate.png",
+  "/images/mkango/new/afrotheme.png",
+  "/images/mkango/new/gazelle.png",
 ];
 
 const footerColumns: FooterColumn[] = [

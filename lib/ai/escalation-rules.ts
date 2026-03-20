@@ -15,10 +15,7 @@ export const escalationRules = {
     "complaint", "manager", "unacceptable", "issue", "problem",
 
     // Special requirements
-    "dietary", "allergy", "medical",
-
-    // Booking intent
-    "book", "reservation", "availability"
+    "dietary", "allergy", "medical"
   ],
 
   categories: {
@@ -31,8 +28,8 @@ export const escalationRules = {
 
   policy: `
   Escalate when:
-  - The request involves pricing, availability, or confirmation
   - The request involves events or group bookings
+  - The request involves pricing for large/custom events, not routine single-room stays
   - The user expresses dissatisfaction or urgency
   - The assistant lacks confirmed information
   `,

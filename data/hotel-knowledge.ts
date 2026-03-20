@@ -56,7 +56,14 @@ export const hotelKnowledge = {
 
   billing: {
     note:
-      "Final guest bills may include standard charges such as service charge and tourism levy as per Zambian regulations. The reservations or front desk team can provide a full breakdown.",
+      "Final guest bills may include standard charges such as service charge and tourism levy as per Zambian regulations. We accept cash payments in USD, GBP, and EUR (2017 series or newer, clean condition, denomination 50 or above). Foreign currency refunds are issued in local Zambian Kwacha at prevailing rates.",
+    prices:
+      "Our Standard Room rates are approximately $85 for single occupancy and $87 for double occupancy (Room Only). Adding breakfast is $15 per person.",
+  },
+
+  reservations: {
+    onlineBooking: "Guests can instantly check room rates, calculate total costs (including breakfast options), and secure their reservation directly through our online booking portal.",
+    bookingLink: "Always provide this link when guests want to book: [Book Online](/checkout)",
   },
 
   contact: {

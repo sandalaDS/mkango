@@ -9,6 +9,42 @@ type Message = {
   content: string;
 };
 
+const renderMessageContent = (content: string) => {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(content.substring(lastIndex, match.index));
+    }
+    parts.push(
+      <a
+        key={match.index}
+        href={match[2]}
+        className="font-medium text-[#0f4d37] underline underline-offset-2 hover:text-black"
+      >
+        {match[1]}
+      </a>
+    );
+    lastIndex = linkRegex.lastIndex;
+  }
+
+  if (lastIndex < content.length) {
+    parts.push(content.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : content;
+};
+
+const SHORTCUTS = [
+  "What are the room rates?",
+  "Is breakfast included?",
+  "Do you have a gym?",
+  "Can I pay in US Dollars?",
+];
+
 export function ChatPanel({ onClose }: { onClose: () => void }) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -32,11 +68,10 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
     scrollToBottom();
   }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading || isEscalated) return;
+  const submitMessage = async (textToSubmit: string) => {
+    if (!textToSubmit.trim() || isLoading || isEscalated) return;
 
-    const userMsg: Message = { id: Date.now().toString(), role: 'user', content: input };
+    const userMsg: Message = { id: Date.now().toString(), role: 'user', content: textToSubmit };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
@@ -84,6 +119,11 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitMessage(input);
+  };
+
   return (
     <div className="flex h-[550px] max-h-[80vh] w-[340px] flex-col overflow-hidden rounded-3xl border border-black/5 bg-white shadow-2xl ring-1 ring-black/5 md:w-[400px]">
       <div className="flex items-center justify-between bg-gradient-to-r from-[#0a3826] to-[#0f4d37] p-4 text-white shadow-sm">
@@ -111,10 +151,24 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
                     : 'border border-gray-100 bg-white text-gray-800 rounded-2xl rounded-tl-sm'
               }`}
             >
-              {m.content}
+              {m.role === 'ai' ? renderMessageContent(m.content) : m.content}
             </div>
           </div>
         ))}
+
+        {messages.length === 1 && !isLoading && !isEscalated && (
+          <div className="mt-4 flex flex-wrap gap-2 px-1">
+            {SHORTCUTS.map((shortcut) => (
+              <button
+                key={shortcut}
+                onClick={() => submitMessage(shortcut)}
+                className="rounded-full border border-[#0f4d37] bg-white px-3 py-1.5 text-xs text-[#0f4d37] shadow-sm transition hover:bg-[#0f4d37] hover:text-white"
+              >
+                {shortcut}
+              </button>
+            ))}
+          </div>
+        )}
         {isLoading && (
           <div className="flex justify-start">
             <div className="flex items-center gap-1 rounded-2xl border border-gray-100 bg-white px-4 py-2 text-sm text-gray-500 shadow-sm">
@@ -127,29 +181,33 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {isEscalated ? (
-        <div className="bg-gray-100 p-4 text-center text-xs text-gray-500">
-          A hotel team member will review your request and follow up.
+      {isEscalated && (
+        <div className="flex items-center justify-center gap-2 border-t border-amber-100 bg-[#fffbeb] py-2 text-[11px] font-medium text-amber-800">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-20"></span>
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500"></span>
+          </span>
+          Waiting for hotel team response...
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex items-center gap-3 border-t border-gray-100 bg-white p-3 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)]">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="How can we help you today?"
-            className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-[14px] outline-none transition-all placeholder:text-gray-400 focus:border-[#0f4d37]/30 focus:bg-white focus:ring-2 focus:ring-[#0f4d37]/10"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0f4d37] text-white shadow-md shadow-[#0f4d37]/20 transition-all hover:bg-[#0a3826] disabled:opacity-50 disabled:shadow-none"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-          </button>
-        </form>
       )}
+
+      <form onSubmit={handleSubmit} className="flex items-center gap-3 border-t border-gray-100 bg-white p-3 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)]">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="How can we help you today?"
+          className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-[14px] outline-none transition-all placeholder:text-gray-400 focus:border-[#0f4d37]/30 focus:bg-white focus:ring-2 focus:ring-[#0f4d37]/10"
+          disabled={isLoading}
+        />
+        <button
+          type="submit"
+          disabled={!input.trim() || isLoading}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0f4d37] text-white shadow-md shadow-[#0f4d37]/20 transition-all hover:bg-[#0a3826] disabled:opacity-50 disabled:shadow-none"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </button>
+      </form>
     </div>
   );
 }
