@@ -34,7 +34,7 @@ const BookRoomButton = ({
     if (selected) {
       setRoom(selected);
     }
-    router.push(`/checkout?room=${slug}`);
+    window.open("https://nebulacrs.hti.app/apollo3/mkangogolfview/#/hotel/370", "_blank");
   };
 
   return (

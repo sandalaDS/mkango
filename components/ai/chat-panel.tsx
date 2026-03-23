@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 type Message = {
   id: string;
-  role: 'user' | 'ai' | 'system';
+  role: 'user' | 'ai' | 'system' | 'staff';
   content: string;
 };
 
@@ -23,7 +23,9 @@ const renderMessageContent = (content: string) => {
       <a
         key={match.index}
         href={match[2]}
-        className="font-medium text-[#0f4d37] underline underline-offset-2 hover:text-black"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-bold underline underline-offset-4 hover:opacity-80 transition"
       >
         {match[1]}
       </a>
@@ -57,7 +59,7 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [isEscalated, setIsEscalated] = useState(false);
+  const [conversationStatus, setConversationStatus] = useState<string>('AI_ACTIVE');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -68,8 +70,42 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
     scrollToBottom();
   }, [messages]);
 
+  // Polling for Staff Replies
+  useEffect(() => {
+    if (!conversationId) return;
+    
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/demo/conversations/${conversationId}/messages?t=${Date.now()}`, {
+          cache: 'no-store'
+        });
+        const data = await res.json();
+        
+        if (data.messages && data.messages.length > 0) {
+           const mapped: Message[] = data.messages.map((m: any) => ({
+             id: m.id || Math.random().toString(),
+             role: m.senderType === 'guest' ? 'user' : (m.senderType === 'staff' ? 'staff' : 'ai'),
+             content: m.body,
+           }));
+           
+           setMessages(prev => {
+              if (prev.length !== mapped.length) return mapped;
+              return prev;
+           });
+        }
+        if (data.status) {
+           setConversationStatus(data.status);
+        }
+      } catch (e) {
+         console.error('Polling error:', e);
+      }
+    }, 3000); // Polling every 3 seconds for demo reliability
+
+    return () => clearInterval(interval);
+  }, [conversationId]);
+
   const submitMessage = async (textToSubmit: string) => {
-    if (!textToSubmit.trim() || isLoading || isEscalated) return;
+    if (!textToSubmit.trim() || isLoading) return;
 
     const userMsg: Message = { id: Date.now().toString(), role: 'user', content: textToSubmit };
     setMessages((prev) => [...prev, userMsg]);
@@ -92,17 +128,26 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
         setConversationId(data.conversationId);
       }
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          role: 'ai',
-          content: data.reply || "Sorry, I couldn't generate a response.",
-        },
-      ]);
+      // We don't manually append the AI message here if we are polling, but polling might take 3s.
+      // So we append it instantly for UX, polling will overwrite with same length/content next tick.
+      if (data.reply) {
+        setMessages((prev) => {
+          // Prevent double mapping if polling already got it
+          const alreadyExists = prev.some(m => m.content === data.reply);
+          if (alreadyExists) return prev;
+          return [
+            ...prev,
+            {
+              id: (Date.now() + 1).toString(),
+              role: 'ai',
+              content: data.reply,
+            },
+          ];
+        });
+      }
 
       if (data.isEscalated) {
-        setIsEscalated(true);
+        setConversationStatus('PENDING_HUMAN');
       }
     } catch (err) {
       console.error(err);
@@ -145,18 +190,28 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
             <div
               className={`max-w-[85%] px-4 py-2.5 text-[14px] leading-relaxed shadow-sm ${
                 m.role === 'user'
-                  ? 'bg-[#0f4d37] text-white rounded-2xl rounded-tr-sm shadow-[#0f4d37]/20'
+                  ? 'bg-[#0f4d37] text-white rounded-2xl rounded-tr-sm shadow-[#0f4d37]/20 flex flex-col items-end text-left'
                   : m.role === 'system'
                     ? 'w-full bg-red-50 text-center text-xs text-red-600 rounded-2xl'
-                    : 'border border-gray-100 bg-white text-gray-800 rounded-2xl rounded-tl-sm'
+                    : m.role === 'staff'
+                      ? 'bg-gradient-to-br from-amber-50 to-amber-100 text-slate-900 border border-amber-200 rounded-2xl rounded-tl-sm shadow-sm'
+                      : 'border border-gray-100 bg-white text-gray-800 rounded-2xl rounded-tl-sm'
               }`}
             >
-              {m.role === 'ai' ? renderMessageContent(m.content) : m.content}
+              <div className="w-full">
+                {m.role === 'staff' && (
+                  <div className="flex items-center gap-1.5 mb-1.5 opacity-80">
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-black/10 text-[9px] font-bold">M</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#0f4d37]">Hotel Team</span>
+                  </div>
+                )}
+                {m.role === 'ai' ? renderMessageContent(m.content) : m.content}
+              </div>
             </div>
           </div>
         ))}
 
-        {messages.length === 1 && !isLoading && !isEscalated && (
+        {messages.length === 1 && !isLoading && conversationStatus === 'AI_ACTIVE' && (
           <div className="mt-4 flex flex-wrap gap-2 px-1">
             {SHORTCUTS.map((shortcut) => (
               <button
@@ -181,13 +236,19 @@ export function ChatPanel({ onClose }: { onClose: () => void }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {isEscalated && (
+      {conversationStatus === 'PENDING_HUMAN' && (
         <div className="flex items-center justify-center gap-2 border-t border-amber-100 bg-[#fffbeb] py-2 text-[11px] font-medium text-amber-800">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-20"></span>
             <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500"></span>
           </span>
           Waiting for hotel team response...
+        </div>
+      )}
+      {conversationStatus === 'HUMAN_ACTIVE' && (
+        <div className="flex items-center justify-center gap-2 border-t border-blue-200 bg-blue-50 py-2 text-[11px] font-medium text-blue-800 shadow-[inset_0_1px_4px_rgba(0,0,0,0.02)]">
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
+          Hotel team is active in this chat
         </div>
       )}
 

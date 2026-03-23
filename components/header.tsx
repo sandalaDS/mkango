@@ -26,7 +26,7 @@ export default function Header({ variant = "transparent" }: { variant?: "transpa
   return (
     <header className={`${headerPosition} z-50 w-full px-4 py-8 sm:px-6 lg:px-10 ${textColor}`}>
       <div className="mx-auto flex max-w-[1400px] items-start justify-between gap-4">
-        <nav className={`hidden flex-1 items-center justify-start gap-8 text-[11px] font-medium uppercase tracking-[0.25em] lg:flex ${navOffset}`}>
+        <nav className={`hidden flex-1 items-center justify-start gap-8 text-[11px] font-extralight uppercase tracking-[0.3em] lg:flex ${navOffset}`}>
           {navPrimary.map((item) => (
             <Link
               key={item.href}
@@ -52,7 +52,7 @@ export default function Header({ variant = "transparent" }: { variant?: "transpa
         </div>
 
         <div className={`flex flex-1 items-start justify-end gap-6 ${navOffset}`}>
-          <nav className="hidden items-center gap-6 text-[11px] font-medium uppercase tracking-[0.25em] md:flex">
+          <nav className="hidden items-center gap-6 text-[11px] font-extralight uppercase tracking-[0.3em] md:flex">
             {navSecondary.map((item) => (
               <Link
                 key={item.href}
@@ -65,7 +65,7 @@ export default function Header({ variant = "transparent" }: { variant?: "transpa
           </nav>
           {isTransparent && (
             <Link
-              href="/checkout"
+              href="https://nebulacrs.hti.app/apollo3/mkangogolfview/#/hotel/370"
               className="rounded-none bg-[var(--color-gold)] px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-emerald-deep)] transition hover:bg-white"
             >
               Reserve

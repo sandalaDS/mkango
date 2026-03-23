@@ -10,7 +10,7 @@ export const rooms: Room[] = [
       "Single or double occupancy with a queen bed or twin beds, air conditioning, satellite television, tea and coffee, and a shower or bath.",
     pricePerNightZMW: 11100,
     pricePerNightUSD: 520,
-    featuredImage: "/images/mkango/new/IMG_0025.jpg",
+    featuredImage: "/images/mkango/rooms/standard.png",
     amenities: [
       "Single occupancy available",
       "Double occupancy available",
@@ -30,7 +30,7 @@ export const rooms: Room[] = [
       "Single or double occupancy with a queen bed, full bath, sitting area, air conditioning, satellite television, and tea and coffee.",
     pricePerNightZMW: 8100,
     pricePerNightUSD: 380,
-    featuredImage: "/images/mkango/new/IMG_0035.jpg",
+    featuredImage: "/images/mkango/rooms/junior.png",
     amenities: [
       "Single occupancy available",
       "Double occupancy available",
@@ -50,7 +50,7 @@ export const rooms: Room[] = [
       "Single or double occupancy with two queen beds, a full bath, satellite television, and either a sitting area or a separate sitting room. Suites include a kitchenette.",
     pricePerNightZMW: 6900,
     pricePerNightUSD: 320,
-    featuredImage: "/images/mkango/new/IMG_0035.jpg",
+    featuredImage: "/images/mkango/rooms/suite.png",
     amenities: [
       "Single occupancy available",
       "Double occupancy available",
@@ -71,7 +71,7 @@ export const rooms: Room[] = [
       "Single or double occupancy with two queen beds, a full bath, satellite television, and either a sitting area or a separate sitting room. Double occupancy apartments include a kitchenette.",
     pricePerNightZMW: 13400,
     pricePerNightUSD: 640,
-    featuredImage: "/images/mkango/new/IMG_0035.jpg",
+    featuredImage: "/images/mkango/rooms/apartment.png",
     amenities: [
       "Single occupancy available",
       "Double occupancy available",

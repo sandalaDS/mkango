@@ -1,5 +1,18 @@
 import type { Metadata } from "next";
+import { Jost, Playfair_Display } from "next/font/google";
 import "./globals.css";
+
+const jost = Jost({
+  subsets: ["latin"],
+  variable: "--font-jost",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "M'kango Golfview Hotel | Conference Venue and Full Service Hotel in Lusaka",
@@ -27,8 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-canvas text-ink antialiased">{children}</body>
+    <html lang="en" className={`${jost.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <body className="bg-canvas text-ink antialiased bg-[var(--color-canvas)]">{children}</body>
     </html>
   );
 }

@@ -62,8 +62,8 @@ export const hotelKnowledge = {
   },
 
   reservations: {
-    onlineBooking: "Guests can instantly check room rates, calculate total costs (including breakfast options), and secure their reservation directly through our online booking portal.",
-    bookingLink: "Always provide this link when guests want to book: [Book Online](/checkout)",
+    onlineBooking: "Guests can instantly check room rates and secure their reservation directly through our online booking portal.",
+    bookingLink: "Always provide this link when guests want to book: https://nebulacrs.hti.app/apollo3/mkangogolfview/#/hotel/370",
   },
 
   contact: {
